@@ -27,9 +27,9 @@ export class MembersService {
         }
       }
     })
-   }
+  }
 
-   getUserParams() {
+  getUserParams() {
     return this.userParams;
   }
 
@@ -46,7 +46,7 @@ export class MembersService {
   }
 
 
-  getMembers(userParams: UserParams ) {
+  getMembers(userParams: UserParams) {
     const response = this.memberCache.get(Object.values(userParams).join('-'));
 
     if (response) return of(response);
@@ -68,7 +68,7 @@ export class MembersService {
   }
 
   getMember(username: string) {
-   const member = [...this.memberCache.values()]
+    const member = [...this.memberCache.values()]
       .reduce((arr, elem) => arr.concat(elem.result), [])
       .find((member: Member) => member.userName === username);
 
@@ -100,9 +100,21 @@ export class MembersService {
     return this.http.delete(this.baseUrl + 'users/delete-photo/' + photoId);
   }
 
-  private getPaginatedResult<T>(url: string,params: HttpParams) {
+  addLike(username: string) {
+    return this.http.post(this.baseUrl + 'likes/' + username, {});
+  }
+
+  getLikes(predicate: string, pageNumber: number, pageSize: number) {
+    let params = this.getPaginationHeaders(pageNumber, pageSize);
+
+    params = params.append('predicate', predicate);
+
+    return this.getPaginatedResult<Member[]>(this.baseUrl + 'likes', params);
+  }
+
+  private getPaginatedResult<T>(url: string, params: HttpParams) {
     const paginatedResult: PaginatedResult<T> = new PaginatedResult<T>;
-    return this.http.get<T>(url ,{ observe: 'response', params }).pipe(
+    return this.http.get<T>(url, { observe: 'response', params }).pipe(
       map(response => {
         if (response.body) {
           paginatedResult.result = response.body;
@@ -118,17 +130,17 @@ export class MembersService {
 
 
   private getPaginationHeaders(pageNumber: number, pageSize: number) {
-      
+
     let params = new HttpParams();
 
-      params = params.append('pageNumber',pageNumber);
-      params = params.append('pageSize',pageSize);
+    params = params.append('pageNumber', pageNumber);
+    params = params.append('pageSize', pageSize);
 
-      return params;
- }
+    return params;
+  }
 
 
 }
-    
+
 
 

@@ -29,7 +29,7 @@ export class MemberListComponent implements OnInit {
   }
 
   loadMembers() {
-    if(this.userParams){
+    if (this.userParams) {
       this.memberService.setUserParams(this.userParams);
       this.memberService.getMembers(this.userParams).subscribe({
         next: response => {
@@ -39,8 +39,8 @@ export class MemberListComponent implements OnInit {
           }
         }
       })
-    } 
-  
+    }
+
   }
 
   resetFilters() {
